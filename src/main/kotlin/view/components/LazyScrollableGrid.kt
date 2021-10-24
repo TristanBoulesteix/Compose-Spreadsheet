@@ -24,7 +24,7 @@ fun LazyScrollableGrid(
     modifier: Modifier = Modifier,
     grid: List<List<Cell>>,
     cellSize: DpSize,
-    content: @Composable (Cell) -> Unit
+    content: @Composable (cell: Cell, rowIndex: Int, columnIndex: Int) -> Unit
 ) = Box(modifier) {
     val horizontalState = rememberScrollState()
 
@@ -78,7 +78,7 @@ private fun ContentGrid(
     verticalState: LazyListState,
     grid: List<List<Cell>>,
     cellSize: DpSize,
-    content: @Composable (Cell) -> Unit
+    content: @Composable (Cell, Int, Int) -> Unit
 ) = Box(modifier = Modifier.fillMaxSize()) {
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(end = 12.dp)
@@ -95,10 +95,10 @@ private fun ContentGrid(
             }
         }
 
-        grid.forEachIndexed { index, cells ->
-            item(index) {
+        grid.forEachIndexed { rowIndex, cells ->
+            item(rowIndex) {
                 Row {
-                    cells.forEach { content(it) }
+                    cells.forEachIndexed { columnIndex, cell -> content(cell, rowIndex, columnIndex) }
                 }
             }
         }

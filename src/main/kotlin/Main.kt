@@ -26,11 +26,15 @@ fun App() = MaterialTheme {
     val viewModel = remember(::ViewModel)
 
     Column {
-        InputFormula(contentText = viewModel.cellInputText, setContentText = viewModel::setInputText)
+        InputFormula(
+            contentText = viewModel.cellInputText,
+            setContentText = viewModel::setInputText,
+            focusRequester = viewModel.focusRequesterForInputFormula
+        )
         Grid(
             gridCell = viewModel.grid,
             selectedCell = viewModel.selectedCell,
-            setSelectedCell = viewModel::setCellSelected
+            setSelectedCell = viewModel::setCellSelectedAt
         )
     }
 }

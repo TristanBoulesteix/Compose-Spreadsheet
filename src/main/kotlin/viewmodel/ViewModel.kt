@@ -4,13 +4,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
+import androidx.compose.ui.focus.FocusRequester
 import fr.tb_lab.model.Cell
 
 class ViewModel {
     private var selectedCellCord by mutableStateOf(0 to 0)
 
-    val grid =
-        List(GRID_SIZE) { x -> List(GRID_SIZE) { y -> Cell("$x $y", x, y) }.toMutableStateList() }.toMutableStateList()
+    val focusRequesterForInputFormula = FocusRequester()
+
+    val grid = List(GRID_SIZE) { List(GRID_SIZE) { Cell() }.toMutableStateList() }.toMutableStateList()
 
     val selectedCell: Cell
         get() {
@@ -25,8 +27,9 @@ class ViewModel {
         cellInputText = input
     }
 
-    fun setCellSelected(cell: Cell) {
-        selectedCellCord = cell.x to cell.y
+    fun setCellSelectedAt(x: Int, y: Int) {
+        selectedCellCord = x to y
+        focusRequesterForInputFormula.requestFocus()
     }
 
     private companion object {
