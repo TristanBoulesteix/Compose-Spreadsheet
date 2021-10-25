@@ -1,5 +1,6 @@
 package fr.tb_lab.view
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -16,16 +17,6 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import fr.tb_lab.model.Cell
 import fr.tb_lab.view.components.LazyScrollableGrid
-
-@Composable
-fun InputFormula(contentText: String, focusRequester: FocusRequester, setContentText: (String) -> Unit) =
-    Box(modifier = Modifier.fillMaxWidth()) {
-        OutlinedTextField(
-            value = contentText,
-            onValueChange = setContentText,
-            modifier = Modifier.padding(10.dp).fillMaxWidth().focusRequester(focusRequester)
-        )
-    }
 
 @Composable
 fun Grid(
@@ -71,4 +62,4 @@ fun Grid(
 private fun cellModifier(
     cellSize: DpSize,
     isActive: Boolean = false
-) = Modifier.size(cellSize).border(width = 1.dp, color = if (isActive) Color.Blue else Color.Black)
+) = Modifier.size(cellSize).border(if (isActive) BorderStroke(3.dp, Color.Blue) else BorderStroke(1.dp, Color.Black))
