@@ -1,3 +1,9 @@
 package fr.tb_lab.model
 
-class Cell(val content: String = "")
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+
+class Cell {
+    var content by mutableStateOf("")
+}

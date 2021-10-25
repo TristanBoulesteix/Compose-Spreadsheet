@@ -1,9 +1,9 @@
 package fr.tb_lab.viewmodel
 
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.focus.FocusRequester
 import fr.tb_lab.model.Cell
 
@@ -12,7 +12,7 @@ class ViewModel {
 
     val focusRequesterForInputFormula = FocusRequester()
 
-    val grid = List(GRID_SIZE) { List(GRID_SIZE) { Cell() }.toMutableStateList() }.toMutableStateList()
+    val grid = List(GRID_SIZE) { List(GRID_SIZE) { Cell() } }
 
     val selectedCell: Cell
         get() {
@@ -20,11 +20,10 @@ class ViewModel {
             return grid[x][y]
         }
 
-    var cellInputText by mutableStateOf("")
-        private set
+    val cellInputText by derivedStateOf { selectedCell.content }
 
     fun setInputText(input: String) {
-        cellInputText = input
+        selectedCell.content = input
     }
 
     fun setCellSelectedAt(x: Int, y: Int) {

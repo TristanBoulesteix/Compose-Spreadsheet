@@ -34,7 +34,8 @@ fun App() = MaterialTheme {
         Grid(
             gridCell = viewModel.grid,
             selectedCell = viewModel.selectedCell,
-            setSelectedCell = viewModel::setCellSelectedAt
+            setSelectedCell = viewModel::setCellSelectedAt,
+            setContentText = viewModel::setInputText
         )
     }
 }
