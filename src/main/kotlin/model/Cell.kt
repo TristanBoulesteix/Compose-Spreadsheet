@@ -10,5 +10,5 @@ import fr.tb_lab.model.parser.scan
 class Cell {
     var content by mutableStateOf("")
 
-    val calculatedContent by derivedStateOf { evaluate(scan(content))?.toString() ?: "" }
+    val calculatedContent by derivedStateOf { evaluate(scan(content)).takeUnless(Double::isNaN)?.toString() ?: "" }
 }

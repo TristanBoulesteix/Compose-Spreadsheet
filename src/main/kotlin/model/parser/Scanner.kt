@@ -39,8 +39,8 @@ fun scan(expression: String): TokenizedExpression {
 }
 
 @OptIn(ExperimentalStdlibApi::class)
-tailrec fun evaluate(tokenizedExpression: TokenizedExpression): Double? {
-    if (tokenizedExpression.isEmpty()) return null
+tailrec fun evaluate(tokenizedExpression: TokenizedExpression): Double {
+    if (tokenizedExpression.isEmpty()) return Double.NaN
 
     if (tokenizedExpression.size == 1 && tokenizedExpression.first() is Value) {
         // TODO: Check that expression is really a value. If not throw exception
