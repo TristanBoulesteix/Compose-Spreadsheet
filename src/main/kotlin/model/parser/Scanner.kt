@@ -5,7 +5,7 @@ import kotlin.math.pow
 
 @OptIn(ExperimentalStdlibApi::class)
 fun scan(expression: String): TokenizedExpression {
-    var stringBuilder = StringBuilder()
+    val stringBuilder = StringBuilder()
 
     if (expression.isBlank()) return emptyList()
 
@@ -21,22 +21,27 @@ fun scan(expression: String): TokenizedExpression {
                         return listOf(InvalidValue)
                     }
                 } else {
-                    if (stringBuilder.isNotBlank()) {
-                        if (token is ParLeft && stringBuilder.last { !it.isWhitespace() } == '-') {
-                            add(Value(-1.0))
-                            add(Mul)
-                        } else if (token is Dot) {
+                    when {
+                        stringBuilder.isNotBlank() -> when {
+                            token is ParLeft && stringBuilder.last { !it.isWhitespace() } == '-' -> {
+                                add(Value(-1.0))
+                                add(Mul)
+                            }
+                            token is Dot -> {
+                                stringBuilder.append(char)
+                                return@forEachIndexed
+                            }
+                            else -> add(Value(stringBuilder.toString()))
+                        }
+                        token is Sub && last() is ParLeft -> {
                             stringBuilder.append(char)
                             return@forEachIndexed
-                        } else {
-                            add(Value(stringBuilder.toString()))
                         }
-                    } else if (token is Dot) {
-                        return listOf(InvalidValue)
+                        token is Dot -> return listOf(InvalidValue)
                     }
 
                     add(token)
-                    stringBuilder = StringBuilder()
+                    stringBuilder.clear()
                 }
             } else stringBuilder.append(char)
         }
