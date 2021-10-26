@@ -10,26 +10,39 @@ fun scan(expression: String): TokenizedExpression {
     if (expression.isBlank()) return emptyList()
 
     return buildList {
+        var lastToken: Token<*>? = null
+
         expression.trim().forEachIndexed { index, char ->
             val token = if (!char.isWhitespace()) Token.getTokenFromSymbol(char) else return@forEachIndexed
 
             if (token !is Value) {
-                if (index == 0 && (token is Add || token is Sub)) {
-                    stringBuilder.append(char)
+                if (index == 0) {
+                    if (token is Add || token is Sub) {
+                        stringBuilder.append(char)
+                    } else if (token is Dot) {
+                        return listOf(InvalidValue)
+                    }
                 } else {
-                    if (stringBuilder.isNotEmpty()) {
+                    if (stringBuilder.isNotBlank()) {
                         if (token is ParLeft && stringBuilder.last { !it.isWhitespace() } == '-') {
                             add(Value(-1.0))
                             add(Mul)
+                        } else if (token is Dot) {
+                            stringBuilder.append(char)
+                            return@forEachIndexed
                         } else {
                             add(Value(stringBuilder.toString()))
                         }
+                    } else if (token is Dot) {
+                        return listOf(InvalidValue)
                     }
 
                     add(token)
                     stringBuilder = StringBuilder()
                 }
             } else stringBuilder.append(char)
+
+            lastToken = token
         }
 
         if (stringBuilder.isNotEmpty()) {
@@ -41,6 +54,8 @@ fun scan(expression: String): TokenizedExpression {
 @OptIn(ExperimentalStdlibApi::class)
 tailrec fun evaluate(tokenizedExpression: TokenizedExpression): Double {
     if (tokenizedExpression.isEmpty()) return Double.NaN
+
+    if (tokenizedExpression.contains(InvalidValue)) TODO("Handle errors")
 
     if (tokenizedExpression.size == 1 && tokenizedExpression.first() is Value) {
         // TODO: Check that expression is really a value. If not throw exception
@@ -72,9 +87,10 @@ tailrec fun evaluate(tokenizedExpression: TokenizedExpression): Double {
 
         add(Value(evaluatedSimpleExpression.toString()))
 
-        for (i in matchingRPAR + 1 until tokenizedExpression.size) {
-            add(tokenizedExpression[i])
-        }
+        if (matchingRPAR != -1)
+            for (i in matchingRPAR + 1 until tokenizedExpression.size) {
+                add(tokenizedExpression[i])
+            }
     }
 
     return evaluate(partiallyEvaluated)

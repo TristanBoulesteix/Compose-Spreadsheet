@@ -2,7 +2,7 @@ package fr.tb_lab.model.parser.tokenType
 
 import kotlin.reflect.KClass
 
-sealed class Token<T : Any>(val symbol: T) {
+sealed class Token<T>(val symbol: T) {
     companion object {
         @OptIn(ExperimentalStdlibApi::class)
         private val objectTokens by lazy {
@@ -24,9 +24,7 @@ object ParLeft : Token<Char>('(')
 
 object ParRight : Token<Char>(')')
 
-class Value(content: Double) : Token<Double>(content) {
-    constructor(content: String) : this(content.toDouble())
-}
+object Dot : Token<Char>('.')
 
 typealias TokenizedExpression = List<Token<*>>
 
