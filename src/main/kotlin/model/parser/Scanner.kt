@@ -3,11 +3,11 @@ package fr.tb_lab.model.parser
 import fr.tb_lab.model.parser.tokenType.*
 import kotlin.math.pow
 
-fun parseExpression(expression: String) = evaluate(scan(expression))
-
 @OptIn(ExperimentalStdlibApi::class)
 fun scan(expression: String): TokenizedExpression {
     var stringBuilder = StringBuilder()
+
+    if (expression.isBlank()) return emptyList()
 
     return buildList {
         expression.trim().forEachIndexed { index, char ->
@@ -39,7 +39,9 @@ fun scan(expression: String): TokenizedExpression {
 }
 
 @OptIn(ExperimentalStdlibApi::class)
-private tailrec fun evaluate(tokenizedExpression: TokenizedExpression): Double {
+tailrec fun evaluate(tokenizedExpression: TokenizedExpression): Double? {
+    if (tokenizedExpression.isEmpty()) return null
+
     if (tokenizedExpression.size == 1 && tokenizedExpression.first() is Value) {
         // TODO: Check that expression is really a value. If not throw exception
         return (tokenizedExpression.first() as Value).symbol

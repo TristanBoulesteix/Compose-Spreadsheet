@@ -36,7 +36,7 @@ fun Grid(
     ) { cell, rowIndex, columnIndex ->
         if (cell != selectedCell) {
             Text(
-                text = cell.content,
+                text = cell.calculatedContent,
                 modifier = cellModifier(cellSize).clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }) {

@@ -19,6 +19,7 @@ fun InputFormula(
     OutlinedTextField(
         value = contentText,
         onValueChange = setContentText,
-        modifier = Modifier.padding(10.dp).fillMaxWidth().focusRequester(focusRequester)
+        modifier = Modifier.padding(10.dp).fillMaxWidth().focusRequester(focusRequester),
+        singleLine = true
     )
 }
