@@ -10,8 +10,6 @@ fun scan(expression: String): TokenizedExpression {
     if (expression.isBlank()) return emptyList()
 
     return buildList {
-        var lastToken: Token<*>? = null
-
         expression.trim().forEachIndexed { index, char ->
             val token = if (!char.isWhitespace()) Token.getTokenFromSymbol(char) else return@forEachIndexed
 
@@ -41,8 +39,6 @@ fun scan(expression: String): TokenizedExpression {
                     stringBuilder = StringBuilder()
                 }
             } else stringBuilder.append(char)
-
-            lastToken = token
         }
 
         if (stringBuilder.isNotEmpty()) {
