@@ -9,8 +9,13 @@ fun scan(expression: String): TokenizedExpression {
     if (expression.isBlank()) return emptyList()
 
     return buildList {
-        expression.trim().forEachIndexed { index, char ->
-            val token = if (!char.isWhitespace()) Token.getTokenFromSymbol(char) else return@forEachIndexed
+        expression.trim().forEachIndexed character@{ index, char ->
+            if (char.isLetter() && (stringBuilder.isEmpty() || stringBuilder.matches("^[A-Z]+\$".toRegex()))) {
+                stringBuilder.append(char)
+                return@character
+            }
+
+            val token = if (!char.isWhitespace()) Token.getTokenFromSymbol(char) else return@character
 
             if (token !is Value) {
                 if (index == 0) {
@@ -28,13 +33,13 @@ fun scan(expression: String): TokenizedExpression {
                             }
                             token is Dot -> {
                                 stringBuilder.append(char)
-                                return@forEachIndexed
+                                return@character
                             }
-                            else -> add(Value(stringBuilder.toString()))
+                            else -> add(valueOf(stringBuilder.toString()))
                         }
                         token is Sub && last() is ParLeft -> {
                             stringBuilder.append(char)
-                            return@forEachIndexed
+                            return@character
                         }
                         token is Dot -> return listOf(InvalidValue)
                     }
@@ -46,7 +51,7 @@ fun scan(expression: String): TokenizedExpression {
         }
 
         if (stringBuilder.isNotEmpty()) {
-            add(Value(stringBuilder.toString()))
+            add(valueOf(stringBuilder.toString()))
         }
     }
 }

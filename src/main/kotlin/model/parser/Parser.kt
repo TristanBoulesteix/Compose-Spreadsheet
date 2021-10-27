@@ -37,7 +37,7 @@ tailrec fun evaluate(tokenizedExpression: TokenizedExpression): Double {
             add(tokenizedExpression[i])
         }
 
-        add(Value(evaluatedSimpleExpression.toString()))
+        add(Value(evaluatedSimpleExpression))
 
         if (matchingRPAR != -1)
             for (i in matchingRPAR + 1 until tokenizedExpression.size) {

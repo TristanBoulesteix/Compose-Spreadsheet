@@ -12,7 +12,7 @@ sealed class Token<T>(val symbol: T) {
             }
         }
 
-        fun getTokenFromSymbol(token: Char) = objectTokens.find { it.symbol == token } ?: Value(token.toString())
+        fun getTokenFromSymbol(token: Char) = objectTokens.find { it.symbol == token } ?: Value(token)
     }
 
     override fun toString(): String {
