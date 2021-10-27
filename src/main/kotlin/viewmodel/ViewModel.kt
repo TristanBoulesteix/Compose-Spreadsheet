@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusRequester
 import fr.tb_lab.model.Cell
+import fr.tb_lab.model.parser.evaluate
 
 class ViewModel {
     private var selectedCellCord by mutableStateOf(0 to 0)
@@ -13,6 +14,12 @@ class ViewModel {
     val focusRequesterForInputFormula = FocusRequester()
 
     val grid = List(GRID_SIZE) { List(GRID_SIZE) { Cell() } }
+
+    val calculatedGrid = grid.map { row ->
+        row.map { cell ->
+            derivedStateOf { evaluate(cell.tokenizedContent).takeUnless(Double::isNaN)?.toString() ?: "" }
+        }
+    }
 
     val selectedCell: Cell
         get() {
