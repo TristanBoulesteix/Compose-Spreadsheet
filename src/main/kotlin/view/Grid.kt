@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
@@ -36,8 +34,10 @@ fun Grid(
         cellSize = cellSize
     ) { cell, rowIndex, columnIndex ->
         if (cell != selectedCell) {
-            val calculatedContent = remember(cell.tokenizedContent) {
-                evaluate(cell.tokenizedContent).takeUnless(Double::isNaN)?.toString() ?: ""
+            val calculatedContent by remember {
+                derivedStateOf {
+                    evaluate(cell.tokenizedContent).takeUnless(Double::isNaN)?.toString() ?: ""
+                }
             }
 
             Text(
