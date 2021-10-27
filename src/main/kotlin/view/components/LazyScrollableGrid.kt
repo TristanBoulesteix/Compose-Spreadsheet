@@ -16,13 +16,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import fr.tb_lab.model.AlphabeticalHeaderList
 import fr.tb_lab.model.Cell
+import fr.tb_lab.model.Grid
 
 @Composable
 fun LazyScrollableGrid(
     modifier: Modifier = Modifier,
-    grid: List<List<Cell>>,
+    grid: Grid,
     cellSize: DpSize,
     content: @Composable (cell: Cell, rowIndex: Int, columnIndex: Int) -> Unit
 ) = Box(modifier) {
@@ -76,7 +76,7 @@ private fun RowHeader(
 private fun ContentGrid(
     horizontalState: ScrollState,
     verticalState: LazyListState,
-    grid: List<List<Cell>>,
+    grid: Grid,
     cellSize: DpSize,
     content: @Composable (Cell, Int, Int) -> Unit
 ) = Box(modifier = Modifier.fillMaxSize()) {
@@ -86,10 +86,8 @@ private fun ContentGrid(
         state = verticalState
     ) {
         stickyHeader {
-            val alphabeticalHeader = remember { AlphabeticalHeaderList(grid.size) }
-
             Row {
-                alphabeticalHeader.forEach {
+                grid.alphaHeader.forEach {
                     HeaderCell(it, cellSize)
                 }
             }

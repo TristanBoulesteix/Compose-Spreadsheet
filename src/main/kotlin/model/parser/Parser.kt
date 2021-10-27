@@ -1,11 +1,16 @@
 package fr.tb_lab.model.parser
 
+import fr.tb_lab.model.Cell
+import fr.tb_lab.model.Grid
 import fr.tb_lab.model.parser.tokenType.*
 import kotlin.math.pow
 
 @OptIn(ExperimentalStdlibApi::class)
-tailrec fun evaluate(tokenizedExpression: TokenizedExpression): Double {
+tailrec fun evaluateCell(tokenizedExpression: TokenizedExpression, grid: Grid, vararg ignoredCell: Cell): Double {
     if (tokenizedExpression.isEmpty()) return Double.NaN
+
+    if (tokenizedExpression.size == 1 && tokenizedExpression.first() is CellValue)
+        return evaluateCell(TODO(), grid, *ignoredCell)
 
     if (tokenizedExpression.contains(InvalidValue)) TODO("Handle errors")
 
@@ -45,7 +50,7 @@ tailrec fun evaluate(tokenizedExpression: TokenizedExpression): Double {
             }
     }
 
-    return evaluate(partiallyEvaluated)
+    return evaluateCell(partiallyEvaluated, grid, *ignoredCell)
 }
 
 private tailrec fun evaluateSimpleExpression(expression: TokenizedExpression): Double {

@@ -1,10 +1,15 @@
 package fr.tb_lab.model.parser
 
+import fr.tb_lab.model.Grid
 import org.junit.jupiter.api.Test
 import kotlin.math.pow
 import kotlin.test.assertEquals
 
 internal class ScannerKtTest {
+    private val testGrid = Grid(10)
+
+    private fun parseExpression(expression: String) = evaluateCell(scan(expression), testGrid, testGrid.first().first())
+
     @Test
     fun parseExpression() {
         val expression = "2 ^2+5*6-(2-4)"

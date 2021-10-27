@@ -16,11 +16,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import fr.tb_lab.model.Cell
+import fr.tb_lab.model.Grid
 import fr.tb_lab.view.components.LazyScrollableGrid
 
 @Composable
 fun Grid(
-    gridCell: List<List<Cell>>,
+    gridCell: Grid,
     calculatedGrid: List<List<State<String>>>,
     selectedCell: Cell,
     setSelectedCell: (x: Int, y: Int) -> Unit,
