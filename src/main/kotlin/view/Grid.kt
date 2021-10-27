@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import fr.tb_lab.model.Cell
+import fr.tb_lab.model.parser.evaluate
 import fr.tb_lab.view.components.LazyScrollableGrid
 
 @Composable
@@ -35,8 +36,12 @@ fun Grid(
         cellSize = cellSize
     ) { cell, rowIndex, columnIndex ->
         if (cell != selectedCell) {
+            val calculatedContent = remember(cell.tokenizedContent) {
+                evaluate(cell.tokenizedContent).takeUnless(Double::isNaN)?.toString() ?: ""
+            }
+
             Text(
-                text = cell.calculatedContent,
+                text = calculatedContent,
                 modifier = cellModifier(cellSize).clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }) {
