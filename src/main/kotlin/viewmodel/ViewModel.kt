@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusRequester
 import fr.tb_lab.model.Cell
+import fr.tb_lab.model.EmptyValueException
 import fr.tb_lab.model.Grid
 import fr.tb_lab.model.parser.evaluateCell
 
@@ -19,7 +20,12 @@ class ViewModel {
     val calculatedGrid = grid.map { row ->
         row.map { cell ->
             derivedStateOf {
-                evaluateCell(cell.tokenizedContent, grid, cell).takeUnless(Double::isNaN)?.toString() ?: ""
+                val result = evaluateCell(cell.tokenizedContent, grid, cell)
+
+                if (result.isFailure) when (result.exceptionOrNull()) {
+                    is EmptyValueException -> ""
+                    else -> TODO()
+                } else result.getOrThrow().toString()
             }
         }
     }

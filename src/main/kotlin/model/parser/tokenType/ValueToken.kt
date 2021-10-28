@@ -1,5 +1,7 @@
 package fr.tb_lab.model.parser.tokenType
 
+import fr.tb_lab.model.Grid
+
 sealed class ValueToken<T>(value: T) : Token<T>(value)
 
 class Value(value: Double) : ValueToken<Double>(value) {
@@ -15,7 +17,7 @@ fun valueOf(value: String): ValueToken<*> {
 
     return when {
         doubleValue != null -> Value(doubleValue)
-        value.matches("^[A-Z]+[1-9]+\$".toRegex()) -> CellValue(value)
+        value.matches(Grid.matchCellCoordinate) -> CellValue(value)
         else -> InvalidValue
     }
 }

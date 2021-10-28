@@ -1,68 +1,82 @@
 package fr.tb_lab.model.parser
 
 import fr.tb_lab.model.Cell
+import fr.tb_lab.model.EmptyValueException
 import fr.tb_lab.model.Grid
 import fr.tb_lab.model.parser.tokenType.*
 import kotlin.math.pow
 
 @OptIn(ExperimentalStdlibApi::class)
-tailrec fun evaluateCell(tokenizedExpression: TokenizedExpression, grid: Grid, vararg ignoredCell: Cell): Double {
-    if (tokenizedExpression.isEmpty()) return Double.NaN
+tailrec fun evaluateCell(
+    tokenizedExpression: TokenizedExpression,
+    grid: Grid,
+    vararg ignoredCell: Cell
+): Result<Double> {
+    return when {
+        tokenizedExpression.isEmpty() -> Result.failure(EmptyValueException())
+        tokenizedExpression.size == 1 -> when (val firstToken = tokenizedExpression.first()) {
+            is Value -> Result.success(firstToken.symbol)
+            is CellValue -> {
+                val resultCell = grid.getCellFromStringCoordinates(firstToken.symbol)
+                if (resultCell.isSuccess) {
+                    val cell = resultCell.getOrNull() ?: TODO()
 
-    if (tokenizedExpression.size == 1 && tokenizedExpression.first() is CellValue)
-        return evaluateCell(TODO(), grid, *ignoredCell)
+                    if (cell !in ignoredCell) {
+                        val cellToIgnore = arrayOf(*ignoredCell, cell)
 
-    if (tokenizedExpression.contains(InvalidValue)) TODO("Handle errors")
-
-    if (tokenizedExpression.size == 1 && tokenizedExpression.first() is Value) {
-        // TODO: Check that expression is really a value. If not throw exception
-        return (tokenizedExpression.first() as Value).symbol
-    }
-
-    val simpleExpression: MutableTokenizedExpression = mutableListOf()
-    val id = tokenizedExpression.lastIndexOf(ParLeft)
-
-    var matchingRPAR = -1
-
-    if (id >= 0) {
-        for (i in (id + 1) until tokenizedExpression.size) {
-            if (tokenizedExpression[i] is ParRight) {
-                matchingRPAR = i
-                break
-            } else simpleExpression += tokenizedExpression[i]
-        }
-    } else {
-        return evaluateSimpleExpression(tokenizedExpression)
-    }
-
-    val evaluatedSimpleExpression = evaluateSimpleExpression(simpleExpression)
-
-    val partiallyEvaluated = buildList {
-        for (i in 0 until id) {
-            add(tokenizedExpression[i])
-        }
-
-        add(Value(evaluatedSimpleExpression))
-
-        if (matchingRPAR != -1)
-            for (i in matchingRPAR + 1 until tokenizedExpression.size) {
-                add(tokenizedExpression[i])
+                        evaluateCell(cell.tokenizedContent, grid, *cellToIgnore)
+                    } else TODO()
+                } else TODO()
             }
-    }
+            else -> TODO()
+        }
+        tokenizedExpression.contains(InvalidValue) -> TODO("Handle invalid values")
+        else -> {
+            val simpleExpression: MutableTokenizedExpression = mutableListOf()
+            val id = tokenizedExpression.lastIndexOf(ParLeft)
 
-    return evaluateCell(partiallyEvaluated, grid, *ignoredCell)
+            var matchingRPAR = -1
+
+            if (id >= 0) {
+                for (i in (id + 1) until tokenizedExpression.size) {
+                    if (tokenizedExpression[i] is ParRight) {
+                        matchingRPAR = i
+                        break
+                    } else simpleExpression += tokenizedExpression[i]
+                }
+            } else {
+                return evaluateSimpleExpression(tokenizedExpression)
+            }
+
+            val evaluatedSimpleExpression = evaluateSimpleExpression(simpleExpression).getOrNull() ?: TODO()
+
+            val partiallyEvaluated = buildList {
+                for (i in 0 until id) {
+                    add(tokenizedExpression[i])
+                }
+
+                add(Value(evaluatedSimpleExpression))
+
+                if (matchingRPAR != -1)
+                    for (i in matchingRPAR + 1 until tokenizedExpression.size) {
+                        add(tokenizedExpression[i])
+                    }
+            }
+
+            evaluateCell(partiallyEvaluated, grid, *ignoredCell)
+        }
+    }
 }
 
-private tailrec fun evaluateSimpleExpression(expression: TokenizedExpression): Double {
-    if (expression.size == 1 && expression.first() is Value) {
-        // TODO: Check that expression is really a value. If not throw exception
-        return (expression.first() as Value).symbol
+private tailrec fun evaluateSimpleExpression(expression: TokenizedExpression): Result<Double> {
+    return if (expression.size == 1 && expression.first() is Value) {
+        Result.success((expression.first() as Value).symbol)
     } else {
         val simpleExpressions: MutableTokenizedExpression = mutableListOf()
 
         val id = expression.indexOf(Pow)
 
-        return if (id != -1) {
+        if (id != -1) {
             // TODO Check values
             val base = (expression[id - 1] as Value).symbol
             val exp = (expression[id + 1] as Value).symbol
@@ -91,7 +105,7 @@ private tailrec fun TokenizedExpression.evaluateAlgebraicExpression(
     firstOperator: AlgebraicToken,
     secondOperator: AlgebraicToken,
     nextPairOperator: Set<Pair<AlgebraicToken, AlgebraicToken>>
-): Double {
+): Result<Double> {
     val idOperator1 = indexOf(firstOperator)
     val idOperator2 = indexOf(secondOperator)
 
@@ -126,6 +140,6 @@ private tailrec fun TokenizedExpression.evaluateAlgebraicExpression(
             val nextOperators = nextPairOperator - operator
 
             this.evaluateAlgebraicExpression(operator.first, operator.second, nextOperators)
-        } else (first() as Value).symbol // TODO
+        } else Result.success((first() as Value).symbol) // TODO
     }
 }
