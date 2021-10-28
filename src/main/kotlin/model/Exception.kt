@@ -1,3 +1,7 @@
 package fr.tb_lab.model
 
-class EmptyValueException : Throwable()
+class EmptyValue : Throwable()
+
+class RecursionError: Throwable()
+
+class InvalidSymbolError: Throwable()

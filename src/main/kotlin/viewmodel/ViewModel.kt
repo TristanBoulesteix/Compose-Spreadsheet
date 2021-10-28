@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusRequester
 import fr.tb_lab.model.Cell
-import fr.tb_lab.model.EmptyValueException
+import fr.tb_lab.model.EmptyValue
 import fr.tb_lab.model.Grid
 import fr.tb_lab.model.parser.evaluateCell
 
@@ -23,7 +23,7 @@ class ViewModel {
                 val result = evaluateCell(cell.tokenizedContent, grid, cell)
 
                 if (result.isFailure) when (result.exceptionOrNull()) {
-                    is EmptyValueException -> ""
+                    is EmptyValue -> ""
                     else -> TODO()
                 } else result.getOrThrow().toString()
             }

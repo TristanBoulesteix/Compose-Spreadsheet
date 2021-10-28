@@ -1,8 +1,6 @@
 package fr.tb_lab.model.parser
 
-import fr.tb_lab.model.Cell
-import fr.tb_lab.model.EmptyValueException
-import fr.tb_lab.model.Grid
+import fr.tb_lab.model.*
 import fr.tb_lab.model.parser.tokenType.*
 import kotlin.math.pow
 
@@ -13,24 +11,24 @@ tailrec fun evaluateCell(
     vararg ignoredCell: Cell
 ): Result<Double> {
     return when {
-        tokenizedExpression.isEmpty() -> Result.failure(EmptyValueException())
+        tokenizedExpression.isEmpty() -> Result.failure(EmptyValue())
         tokenizedExpression.size == 1 -> when (val firstToken = tokenizedExpression.first()) {
             is Value -> Result.success(firstToken.symbol)
             is CellValue -> {
                 val resultCell = grid.getCellFromStringCoordinates(firstToken.symbol)
                 if (resultCell.isSuccess) {
-                    val cell = resultCell.getOrNull() ?: TODO()
+                    val cell = resultCell.getOrThrow()
 
                     if (cell !in ignoredCell) {
                         val cellToIgnore = arrayOf(*ignoredCell, cell)
 
                         evaluateCell(cell.tokenizedContent, grid, *cellToIgnore)
-                    } else TODO()
-                } else TODO()
+                    } else Result.failure(RecursionError())
+                } else Result.failure(resultCell.exceptionOrNull()!!)
             }
-            else -> TODO()
+            else -> Result.failure(InvalidSymbolError())
         }
-        tokenizedExpression.contains(InvalidValue) -> TODO("Handle invalid values")
+        tokenizedExpression.contains(InvalidValue) -> Result.failure(InvalidSymbolError())
         else -> {
             val simpleExpression: MutableTokenizedExpression = mutableListOf()
             val id = tokenizedExpression.lastIndexOf(ParLeft)
