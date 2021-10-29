@@ -8,7 +8,7 @@ import kotlin.math.pow
 tailrec fun evaluateCell(
     tokenizedExpression: TokenizedExpression,
     grid: Grid,
-    ignoredCell: Set<Cell>
+    ignoredCells: Set<Cell>
 ): Result<Double> {
     return when {
         tokenizedExpression.isEmpty() -> Result.failure(EmptyValue())
@@ -19,8 +19,8 @@ tailrec fun evaluateCell(
                 if (resultCell.isSuccess) {
                     val cell = resultCell.getOrThrow()
 
-                    if (cell !in ignoredCell) {
-                        val cellToIgnore = ignoredCell + cell
+                    if (cell !in ignoredCells) {
+                        val cellToIgnore = ignoredCells + cell
 
                         evaluateCell(cell.tokenizedContent, grid, cellToIgnore)
                     } else Result.failure(RecursionError())
@@ -43,10 +43,11 @@ tailrec fun evaluateCell(
                     } else simpleExpression += tokenizedExpression[i]
                 }
             } else {
-                return evaluateSimpleExpression(tokenizedExpression)
+                return evaluateSimpleExpression(tokenizedExpression, grid, ignoredCells)
             }
 
-            val evaluatedSimpleExpression = evaluateSimpleExpression(simpleExpression).getOrNull() ?: TODO()
+            val evaluatedSimpleExpression =
+                evaluateSimpleExpression(simpleExpression, grid, ignoredCells).getOrElse { return Result.failure(it) }
 
             val partiallyEvaluated = buildList {
                 for (i in 0 until id) {
@@ -61,12 +62,16 @@ tailrec fun evaluateCell(
                     }
             }
 
-            evaluateCell(partiallyEvaluated, grid, ignoredCell)
+            evaluateCell(partiallyEvaluated, grid, ignoredCells)
         }
     }
 }
 
-private tailrec fun evaluateSimpleExpression(expression: TokenizedExpression): Result<Double> {
+private tailrec fun evaluateSimpleExpression(
+    expression: TokenizedExpression,
+    grid: Grid,
+    ignoredCells: Set<Cell>
+): Result<Double> {
     return if (expression.size == 1 && expression.first() is Value) {
         Result.success((expression.first() as Value).symbol)
     } else {
@@ -75,9 +80,12 @@ private tailrec fun evaluateSimpleExpression(expression: TokenizedExpression): R
         val id = expression.indexOf(Pow)
 
         if (id != -1) {
+            val (baseToken, expToken) = expression.getSurroundingTokenValue(id)
+                .getOrElse { return Result.failure(InvalidSymbolError()) }
+
             // TODO Check values
-            val base = (expression[id - 1] as Value).symbol
-            val exp = (expression[id + 1] as Value).symbol
+            val base = evaluateValueToken(baseToken, grid, ignoredCells) { return Result.failure(it) }
+            val exp = evaluateValueToken(expToken, grid, ignoredCells) { return Result.failure(it) }
 
             val calcExp = base.pow(exp)
 
@@ -91,18 +99,20 @@ private tailrec fun evaluateSimpleExpression(expression: TokenizedExpression): R
                 simpleExpressions += expression[i]
             }
 
-            evaluateSimpleExpression(simpleExpressions)
+            evaluateSimpleExpression(simpleExpressions, grid, ignoredCells)
         } else {
-            expression.evaluateAlgebraicExpression(Mul, Div, setOf(Add to Sub))
+            expression.evaluateArithmeticExpression(Mul, Div, setOf(Add to Sub), grid, ignoredCells)
         }
     }
 }
 
 @OptIn(ExperimentalStdlibApi::class)
-private tailrec fun TokenizedExpression.evaluateAlgebraicExpression(
-    firstOperator: AlgebraicToken,
-    secondOperator: AlgebraicToken,
-    nextPairOperator: Set<Pair<AlgebraicToken, AlgebraicToken>>
+private tailrec fun TokenizedExpression.evaluateArithmeticExpression(
+    firstOperator: ArithmeticToken,
+    secondOperator: ArithmeticToken,
+    nextPairOperator: Set<Pair<ArithmeticToken, ArithmeticToken>>,
+    grid: Grid,
+    ignoredCells: Set<Cell>
 ): Result<Double> {
     val idOperator1 = indexOf(firstOperator)
     val idOperator2 = indexOf(secondOperator)
@@ -114,13 +124,9 @@ private tailrec fun TokenizedExpression.evaluateAlgebraicExpression(
         val (firstValueToken, secondValueToken) = getSurroundingTokenValue(idComputed).getOrNull()
             ?: return Result.failure(InvalidSymbolError())
 
-        if (firstValueToken is CellValue) {
+        val firstValue = evaluateValueToken(firstValueToken, grid, ignoredCells) { return Result.failure(it) }
 
-        }
-
-        // TODO Check values
-        val firstValue = (this[idComputed - 1] as Value).symbol
-        val secondValue = (this[idComputed + 1] as Value).symbol
+        val secondValue = evaluateValueToken(secondValueToken, grid, ignoredCells) { return Result.failure(it) }
 
         val op = if (idComputed == idOperator1) firstOperator.op else secondOperator.op
 
@@ -128,23 +134,39 @@ private tailrec fun TokenizedExpression.evaluateAlgebraicExpression(
 
         val simpleExpression: TokenizedExpression = buildList {
             for (i in 0 until idComputed - 1) {
-                add(this@evaluateAlgebraicExpression[i])
+                add(this@evaluateArithmeticExpression[i])
             }
 
             add(Value(computed))
 
-            for (i in idComputed + 2 until this@evaluateAlgebraicExpression.size) {
-                add(this@evaluateAlgebraicExpression[i])
+            for (i in idComputed + 2 until this@evaluateArithmeticExpression.size) {
+                add(this@evaluateArithmeticExpression[i])
             }
         }
 
-        evaluateSimpleExpression(simpleExpression)
+        evaluateSimpleExpression(simpleExpression, grid, ignoredCells)
     } else {
         if (nextPairOperator.isNotEmpty()) {
             val operator = nextPairOperator.first()
             val nextOperators = nextPairOperator - operator
 
-            this.evaluateAlgebraicExpression(operator.first, operator.second, nextOperators)
+            this.evaluateArithmeticExpression(operator.first, operator.second, nextOperators, grid, ignoredCells)
         } else Result.success((first() as Value).symbol) // TODO
     }
 }
+
+private inline fun evaluateValueToken(
+    firstValueToken: ValueToken<*>,
+    grid: Grid,
+    ignoredCells: Set<Cell>,
+    onFailure: (Throwable) -> Nothing
+) = if (firstValueToken is CellValue) {
+    val cellToEvaluate =
+        grid.getCellFromStringCoordinates(firstValueToken.symbol).getOrElse(onFailure)
+
+    evaluateCell(
+        cellToEvaluate.tokenizedContent,
+        grid,
+        ignoredCells + cellToEvaluate
+    ).getOrElse(onFailure)
+} else (firstValueToken as Value).symbol

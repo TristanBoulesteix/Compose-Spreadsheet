@@ -8,7 +8,7 @@ sealed class Token<T>(val symbol: T) {
         private val objectTokens by lazy {
             buildSet {
                 addAll(Token::class.sealedSubclasses.mapNotNull(KClass<out Token<*>>::objectInstance))
-                addAll(AlgebraicToken::class.sealedSubclasses.mapNotNull(KClass<out Token<*>>::objectInstance))
+                addAll(ArithmeticToken::class.sealedSubclasses.mapNotNull(KClass<out Token<*>>::objectInstance))
             }
         }
 

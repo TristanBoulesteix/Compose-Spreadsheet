@@ -6,9 +6,9 @@ class Grid(gridSize: Int) : List<List<Cell>> by List(gridSize, { List(gridSize) 
     fun getCellFromStringCoordinates(coordinates: String): Result<Cell> {
         return if (coordinates.matches(matchCellCoordinate)) {
             val splitId = coordinates.indexOfFirst(Char::isDigit)
-            val abscissa = coordinates.substring(0 until splitId)
-            val ordinate = coordinates.substring(splitId until coordinates.length)
-            Result.success(this[alphaHeader.indexOf(abscissa)][ordinate.toInt() - 1])
+            val columnId = coordinates.substring(0 until splitId)
+            val rowId = coordinates.substring(splitId until coordinates.length)
+            Result.success(this[rowId.toInt() - 1][alphaHeader.indexOf(columnId)])
         } else Result.failure(IllegalArgumentException("Invalid coordinate"))
     }
 
