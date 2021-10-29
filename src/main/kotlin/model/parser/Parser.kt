@@ -16,16 +16,13 @@ tailrec fun evaluateCell(
         tokenizedExpression.size == 1 -> when (val firstToken = tokenizedExpression.first()) {
             is Value -> Result.success(firstToken.symbol)
             is CellValue -> {
-                val resultCell = grid.getCellFromStringCoordinates(firstToken.symbol)
-                if (resultCell.isSuccess) {
-                    val cell = resultCell.getOrThrow()
+                val cell = grid.getCellFromStringCoordinates(firstToken.symbol).getOrElse { return Result.failure(it) }
 
-                    if (cell !in ignoredCells) {
-                        val cellToIgnore = ignoredCells + cell
+                if (cell !in ignoredCells) {
+                    val cellToIgnore = ignoredCells + cell
 
-                        evaluateCell(cell.tokenizedContent, grid, cellToIgnore, isSubCell = true)
-                    } else Result.failure(RecursionError())
-                } else Result.failure(resultCell.exceptionOrNull()!!)
+                    evaluateCell(cell.tokenizedContent, grid, cellToIgnore, isSubCell = true)
+                } else Result.failure(RecursionError())
             }
             else -> Result.failure(InvalidSymbolError())
         }
