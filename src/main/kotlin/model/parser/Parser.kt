@@ -111,6 +111,13 @@ private tailrec fun TokenizedExpression.evaluateAlgebraicExpression(
     else idOperator1.coerceAtLeast(idOperator2)
 
     return if (idComputed != -1) {
+        val (firstValueToken, secondValueToken) = getSurroundingTokenValue(idComputed).getOrNull()
+            ?: return Result.failure(InvalidSymbolError())
+
+        if(firstValueToken is CellValue) {
+            
+        }
+
         // TODO Check values
         val firstValue = (this[idComputed - 1] as Value).symbol
         val secondValue = (this[idComputed + 1] as Value).symbol

@@ -21,9 +21,7 @@ fun scan(expression: String): TokenizedExpression {
                 if (index == 0) {
                     if (token is Add || token is Sub) {
                         stringBuilder.append(char)
-                    } else if (token is Dot) {
-                        return listOf(InvalidValue)
-                    }
+                    } else return listOf(InvalidValue)
                 } else {
                     when {
                         stringBuilder.isNotBlank() -> when {

@@ -4,9 +4,7 @@ import fr.tb_lab.model.Grid
 
 sealed class ValueToken<T>(value: T) : Token<T>(value)
 
-class Value(value: Double) : ValueToken<Double>(value) {
-    constructor(value: Char) : this(value.toString().toDouble())
-}
+class Value(value: Double) : ValueToken<Double>(value)
 
 object InvalidValue : ValueToken<Nothing?>(null)
 
@@ -21,3 +19,5 @@ fun valueOf(value: String): ValueToken<*> {
         else -> InvalidValue
     }
 }
+
+fun valueOf(value: Char) = valueOf(value.toString())

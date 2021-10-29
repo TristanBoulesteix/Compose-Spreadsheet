@@ -12,7 +12,7 @@ sealed class Token<T>(val symbol: T) {
             }
         }
 
-        fun getTokenFromSymbol(token: Char) = objectTokens.find { it.symbol == token } ?: Value(token)
+        fun getTokenFromSymbol(token: Char) = objectTokens.find { it.symbol == token } ?: valueOf(token)
     }
 
     override fun toString(): String {
@@ -25,7 +25,3 @@ object ParLeft : Token<Char>('(')
 object ParRight : Token<Char>(')')
 
 object Dot : Token<Char>('.')
-
-typealias TokenizedExpression = List<Token<*>>
-
-typealias MutableTokenizedExpression = MutableList<Token<*>>

@@ -5,9 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusRequester
-import fr.tb_lab.model.Cell
-import fr.tb_lab.model.EmptyValue
-import fr.tb_lab.model.Grid
+import fr.tb_lab.model.*
 import fr.tb_lab.model.parser.evaluateCell
 
 class ViewModel {
@@ -24,6 +22,8 @@ class ViewModel {
 
                 if (result.isFailure) when (result.exceptionOrNull()) {
                     is EmptyValue -> ""
+                    is RecursionError -> "REC"
+                    is InvalidSymbolError -> "SYNTAX ERROR"
                     else -> TODO()
                 } else result.getOrThrow().toString()
             }
