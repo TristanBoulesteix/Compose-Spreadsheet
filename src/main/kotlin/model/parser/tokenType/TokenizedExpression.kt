@@ -7,7 +7,7 @@ typealias TokenizedExpression = List<Token<*>>
 typealias MutableTokenizedExpression = MutableList<Token<*>>
 
 fun TokenizedExpression.getSurroundingTokenValue(index: Int): Result<SurroundingToken> =
-    if (isEmpty() || index !in 1 until size)
+    if (isEmpty() || index !in 1 until size - 1)
         Result.failure(InvalidSymbolError())
     else {
         val previousToken = this[index - 1] as? ValueToken
