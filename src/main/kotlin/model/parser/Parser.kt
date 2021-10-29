@@ -165,6 +165,7 @@ private inline fun evaluateValueToken(
     evaluateCell(
         cellToEvaluate.tokenizedContent,
         grid,
-        ignoredCells + cellToEvaluate
+        ignoredCells + cellToEvaluate,
+        isSubCell = true
     ).getOrElse { if (it is EmptyValue) return .0 else onFailure(it) }
 } else (firstValueToken as Value).symbol
