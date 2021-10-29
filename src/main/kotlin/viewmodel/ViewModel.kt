@@ -18,7 +18,7 @@ class ViewModel {
     val calculatedGrid = grid.map { row ->
         row.map { cell ->
             derivedStateOf {
-                val result = evaluateCell(cell.tokenizedContent, grid, cell)
+                val result = evaluateCell(cell.tokenizedContent, grid, setOf(cell))
 
                 if (result.isFailure) when (result.exceptionOrNull()) {
                     is EmptyValue -> ""
