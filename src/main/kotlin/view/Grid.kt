@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -24,10 +23,9 @@ fun Grid(
     gridCell: Grid,
     calculatedGrid: List<List<State<String>>>,
     selectedCell: Cell,
-    setSelectedCell: (x: Int, y: Int) -> Unit,
-    setContentText: (String) -> Unit
+    setSelectedCell: (x: Int, y: Int) -> Unit
 ) = Box(modifier = Modifier.fillMaxSize()) {
-    val cellSize = remember { DpSize(width = 60.dp, height = 30.dp) }
+    val cellSize = remember { DpSize(width = 75.dp, height = 35.dp) }
 
     LazyScrollableGrid(
         modifier = Modifier.fillMaxSize().padding(5.dp),
@@ -39,27 +37,32 @@ fun Grid(
 
             Text(
                 text = calculatedContent,
-                modifier = cellModifier(cellSize).clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }) {
-                    setSelectedCell(
-                        rowIndex,
-                        columnIndex
-                    )
-                }
+                modifier = cellModifier(cellSize).cellSelector(setSelectedCell, rowIndex, columnIndex)
             )
         } else {
-            BasicTextField(
-                value = cell.content,
-                onValueChange = setContentText,
+            Text(
+                text = cell.content,
                 modifier = cellModifier(
                     cellSize = cellSize,
                     isActive = cell == selectedCell
-                ),
-                singleLine = true
+                ).cellSelector(setSelectedCell, rowIndex, columnIndex)
             )
         }
     }
+}
+
+@Composable
+private fun Modifier.cellSelector(
+    setSelectedCell: (x: Int, y: Int) -> Unit,
+    rowIndex: Int,
+    columnIndex: Int
+): Modifier = clickable(
+    indication = null,
+    interactionSource = remember { MutableInteractionSource() }) {
+    setSelectedCell(
+        rowIndex,
+        columnIndex
+    )
 }
 
 @Stable
