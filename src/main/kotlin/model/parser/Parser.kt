@@ -8,10 +8,11 @@ import kotlin.math.pow
 tailrec fun evaluateCell(
     tokenizedExpression: TokenizedExpression,
     grid: Grid,
-    ignoredCells: Set<Cell>
+    ignoredCells: Set<Cell>,
+    isSubCell: Boolean = false
 ): Result<Double> {
     return when {
-        tokenizedExpression.isEmpty() -> Result.failure(EmptyValue())
+        tokenizedExpression.isEmpty() -> if (isSubCell) Result.success(.0) else Result.failure(EmptyValue())
         tokenizedExpression.size == 1 -> when (val firstToken = tokenizedExpression.first()) {
             is Value -> Result.success(firstToken.symbol)
             is CellValue -> {
@@ -22,7 +23,7 @@ tailrec fun evaluateCell(
                     if (cell !in ignoredCells) {
                         val cellToIgnore = ignoredCells + cell
 
-                        evaluateCell(cell.tokenizedContent, grid, cellToIgnore)
+                        evaluateCell(cell.tokenizedContent, grid, cellToIgnore, isSubCell = true)
                     } else Result.failure(RecursionError())
                 } else Result.failure(resultCell.exceptionOrNull()!!)
             }
@@ -168,5 +169,5 @@ private inline fun evaluateValueToken(
         cellToEvaluate.tokenizedContent,
         grid,
         ignoredCells + cellToEvaluate
-    ).getOrElse(onFailure)
+    ).getOrElse { if (it is EmptyValue) return .0 else onFailure(it) }
 } else (firstValueToken as Value).symbol
