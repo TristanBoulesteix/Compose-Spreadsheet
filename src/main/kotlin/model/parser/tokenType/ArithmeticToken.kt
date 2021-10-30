@@ -13,3 +13,5 @@ object Div : ArithmeticToken('/', Double::div)
 object Mul : ArithmeticToken('*', Double::times)
 
 object Pow : ArithmeticToken('^', Double::pow)
+
+object Mod : ArithmeticToken('%', Double::mod)
