@@ -12,13 +12,13 @@ import javax.swing.JFileChooser
 import javax.swing.JOptionPane
 import javax.swing.filechooser.FileNameExtensionFilter
 
+private const val extension = "json"
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun FrameWindowScope.Menu(exportGrid: (Path) -> Unit) = MenuBar {
+fun FrameWindowScope.Menu(exportGrid: (Path) -> Unit, importGrid: (Path) -> Unit) = MenuBar {
     Menu("File", mnemonic = 'f') {
         Item("Export grid", shortcut = KeyShortcut(Key.S, ctrl = true)) {
-            val extension = "json"
-
             JFileChooser().apply {
                 dialogTitle = "Save as"
                 fileFilter = FileNameExtensionFilter("JSON file", extension)
@@ -26,9 +26,19 @@ fun FrameWindowScope.Menu(exportGrid: (Path) -> Unit) = MenuBar {
                     val fileToSave =
                         if (selectedFile.extension == extension) selectedFile else File("${this.selectedFile.parentFile.absolutePath}${File.separator}${this.selectedFile.nameWithoutExtension}.$extension")
 
-                    if(!fileToSave.exists() || confirmOverrideFile()) {
+                    if (!fileToSave.exists() || confirmOverrideFile()) {
                         exportGrid(fileToSave.toPath())
                     }
+                }
+            }
+        }
+
+        Item("Import grid", shortcut = KeyShortcut(Key.O, ctrl = true)) {
+            JFileChooser().apply {
+                dialogTitle = "Import grid"
+                fileFilter = FileNameExtensionFilter("JSON file", extension)
+                if (showOpenDialog(null) == JFileChooser.APPROVE_OPTION && !this.selectedFile.isDirectory && this.selectedFile.exists()) {
+                    importGrid(selectedFile.toPath())
                 }
             }
         }

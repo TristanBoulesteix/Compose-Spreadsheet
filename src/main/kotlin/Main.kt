@@ -20,7 +20,7 @@ fun main() = singleWindowApplication(
     val viewModel = remember(::ViewModel)
 
     MaterialTheme {
-        Menu(exportGrid = viewModel::exportGrid)
+        Menu(exportGrid = viewModel::exportGrid, importGrid = viewModel::importGrid)
         App(viewModel)
     }
 }

@@ -7,9 +7,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusRequester
 import fr.tb_lab.model.*
 import fr.tb_lab.model.parser.evaluateCell
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.nio.file.Path
+import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
 class ViewModel {
@@ -17,19 +19,22 @@ class ViewModel {
 
     val focusRequesterForInputFormula = FocusRequester()
 
-    val grid = Grid(GRID_SIZE)
+    var grid by mutableStateOf(Grid(GRID_SIZE))
+        private set
 
-    val calculatedGrid = grid.map { row ->
-        row.map { cell ->
-            derivedStateOf {
-                val result = evaluateCell(cell.tokenizedContent, grid, setOf(cell))
+    val calculatedGrid by derivedStateOf {
+        grid.map { row ->
+            row.map { cell ->
+                derivedStateOf {
+                    val result = evaluateCell(cell.tokenizedContent, grid, setOf(cell))
 
-                if (result.isFailure) when (result.exceptionOrNull()) {
-                    is EmptyValue -> ""
-                    is RecursionError -> "REC"
-                    is InvalidSymbolError -> "SYNTAX"
-                    else -> "Error"
-                } else result.getOrThrow().let { if (it.isNaN() || it.isInfinite()) "Math" else it.toString() }
+                    if (result.isFailure) when (result.exceptionOrNull()) {
+                        is EmptyValue -> ""
+                        is RecursionError -> "REC"
+                        is InvalidSymbolError -> "SYNTAX"
+                        else -> "Error"
+                    } else result.getOrThrow().let { if (it.isNaN() || it.isInfinite()) "Math" else it.toString() }
+                }
             }
         }
     }
@@ -52,13 +57,20 @@ class ViewModel {
     }
 
     fun exportGrid(path: Path) {
-        val jsonGrid = try {
-            Json.encodeToString(grid)
+        try {
+            val jsonGrid = Json.encodeToString(grid)
+            path.writeText(jsonGrid)
         } catch (e: Throwable) {
             return
         }
+    }
 
-        path.writeText(jsonGrid)
+    fun importGrid(path: Path) {
+        try {
+            grid = Json.decodeFromString(path.readText())
+        } catch (e: Throwable) {
+            return
+        }
     }
 
     private companion object {
