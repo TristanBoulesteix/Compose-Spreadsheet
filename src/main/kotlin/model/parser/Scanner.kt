@@ -19,15 +19,26 @@ fun scan(expression: String): TokenizedExpression {
 
             if (token !is Value) {
                 if (index == 0) {
-                    if (token is Add || token is Sub) {
-                        stringBuilder.append(char)
-                    } else return listOf(InvalidValue)
+                    when (token) {
+                        is Add, is Sub -> {
+                            stringBuilder.append(char)
+                        }
+                        is ParLeft -> add(ParLeft)
+                        else -> return listOf(InvalidValue)
+                    }
                 } else {
                     when {
                         stringBuilder.isNotBlank() -> when {
                             token is ParLeft && stringBuilder.last { !it.isWhitespace() } == '-' -> {
                                 add(Value(-1.0))
                                 add(Mul)
+                            }
+                            token is ParLeft -> {
+                                add(valueOf(stringBuilder.toString()))
+                                stringBuilder.clear()
+                                add(Mul)
+                                add(token)
+                                return@character
                             }
                             token is Dot -> {
                                 stringBuilder.append(char)
@@ -39,6 +50,7 @@ fun scan(expression: String): TokenizedExpression {
                             stringBuilder.append(char)
                             return@character
                         }
+                        token is ParLeft && isNotEmpty() && last() is ParRight -> add(Mul)
                         token is Dot -> return listOf(InvalidValue)
                     }
 
