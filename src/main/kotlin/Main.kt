@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
+import fr.tb_lab.view.ErrorDialog
 import fr.tb_lab.view.Grid
 import fr.tb_lab.view.InputFormula
 import fr.tb_lab.view.Menu
@@ -20,6 +21,10 @@ fun main() = singleWindowApplication(
     val viewModel = remember(::ViewModel)
 
     MaterialTheme {
+        viewModel.errorMessage?.let {
+            ErrorDialog(title = "Error", message = it, onCloseRequest = { viewModel.errorMessage = null })
+        }
+
         Menu(exportGrid = viewModel::exportGrid, importGrid = viewModel::importGrid)
         App(viewModel)
     }

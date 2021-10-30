@@ -47,6 +47,8 @@ class ViewModel {
 
     val cellInputText by derivedStateOf { selectedCell.content }
 
+    var errorMessage: String? by mutableStateOf(null)
+
     fun setInputText(input: String) {
         selectedCell.content = input
     }
@@ -61,7 +63,7 @@ class ViewModel {
             val jsonGrid = Json.encodeToString(grid)
             path.writeText(jsonGrid)
         } catch (e: Throwable) {
-            return
+            errorMessage = "An error has occurred. Unable to export grid. Please try again."
         }
     }
 
@@ -69,7 +71,8 @@ class ViewModel {
         try {
             grid = Json.decodeFromString(path.readText())
         } catch (e: Throwable) {
-            return
+            errorMessage = """An error has occurred. Unable to import grid. 
+                |Please check that your file respect the right format.""".trimMargin()
         }
     }
 
