@@ -23,9 +23,9 @@ class ViewModel {
                 if (result.isFailure) when (result.exceptionOrNull()) {
                     is EmptyValue -> ""
                     is RecursionError -> "REC"
-                    is InvalidSymbolError -> "SYNTAX ERROR"
-                    else -> ""
-                } else result.getOrThrow().let { if (it.isNaN() || it.isInfinite()) "Error" else it.toString() }
+                    is InvalidSymbolError -> "SYNTAX"
+                    else -> "Error"
+                } else result.getOrThrow().let { if (it.isNaN() || it.isInfinite()) "Math" else it.toString() }
             }
         }
     }

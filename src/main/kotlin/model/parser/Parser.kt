@@ -4,8 +4,18 @@ import fr.tb_lab.model.*
 import fr.tb_lab.model.parser.tokenType.*
 import kotlin.math.pow
 
+fun evaluateCell(
+    tokenizedExpression: TokenizedExpression,
+    grid: Grid,
+    ignoredCells: Set<Cell>
+) = try {
+    evaluateCellExpression(tokenizedExpression, grid, ignoredCells)
+} catch (t: Throwable) {
+    Result.failure(t)
+}
+
 @OptIn(ExperimentalStdlibApi::class)
-tailrec fun evaluateCell(
+private tailrec fun evaluateCellExpression(
     tokenizedExpression: TokenizedExpression,
     grid: Grid,
     ignoredCells: Set<Cell>,
@@ -21,7 +31,7 @@ tailrec fun evaluateCell(
                 if (cell !in ignoredCells) {
                     val cellToIgnore = ignoredCells + cell
 
-                    evaluateCell(cell.tokenizedContent, grid, cellToIgnore, isSubCell = true)
+                    evaluateCellExpression(cell.tokenizedContent, grid, cellToIgnore, isSubCell = true)
                 } else Result.failure(RecursionError())
             }
             else -> Result.failure(InvalidSymbolError())
@@ -63,7 +73,7 @@ tailrec fun evaluateCell(
                     }
             }
 
-            evaluateCell(partiallyEvaluated, grid, ignoredCells)
+            evaluateCellExpression(partiallyEvaluated, grid, ignoredCells)
         }
     }
 }
@@ -164,7 +174,7 @@ private inline fun evaluateValueToken(
     val cellToEvaluate =
         grid.getCellFromStringCoordinates(firstValueToken.symbol).getOrElse(onFailure)
 
-    evaluateCell(
+    evaluateCellExpression(
         cellToEvaluate.tokenizedContent,
         grid,
         ignoredCells + cellToEvaluate,

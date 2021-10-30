@@ -35,9 +35,12 @@ fun Grid(
         if (cell != selectedCell) {
             val calculatedContent by calculatedGrid[rowIndex][columnIndex]
 
+            val cellTextColor = if (calculatedContent.toDoubleOrNull() != null) Color.Unspecified else Color.Red
+
             Text(
                 text = calculatedContent,
-                modifier = cellModifier(cellSize).cellSelector(setSelectedCell, rowIndex, columnIndex)
+                modifier = cellModifier(cellSize).cellSelector(setSelectedCell, rowIndex, columnIndex),
+                color = cellTextColor
             )
         } else {
             Text(
