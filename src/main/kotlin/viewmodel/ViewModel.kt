@@ -69,7 +69,9 @@ class ViewModel {
 
     fun importGrid(path: Path) {
         try {
-            grid = Json.decodeFromString(path.readText())
+            val newGrid: Grid = Json.decodeFromString(path.readText())
+            grid = newGrid.takeIf { grid -> grid.size == GRID_SIZE && grid.all { it.size == GRID_SIZE } }
+                ?: throw IllegalArgumentException("Invalid size of grid")
         } catch (e: Throwable) {
             errorMessage = """An error has occurred. Unable to import grid. 
                 |Please check that your file respect the right format.""".trimMargin()
@@ -77,6 +79,6 @@ class ViewModel {
     }
 
     private companion object {
-        const val GRID_SIZE = 30
+        const val GRID_SIZE = 40
     }
 }
