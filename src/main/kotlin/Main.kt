@@ -17,25 +17,26 @@ fun main() = singleWindowApplication(
     title = "ComposeSheet",
     state = WindowState(position = WindowPosition.Aligned(Alignment.Center)),
 ) {
-    Menu()
-    App()
+    val viewModel = remember(::ViewModel)
+
+    MaterialTheme {
+        Menu(exportGrid = viewModel::exportGrid)
+        App(viewModel)
+    }
 }
 
 @Composable
-fun App() = MaterialTheme {
-    val viewModel = remember(::ViewModel)
-
-    Column {
-        InputFormula(
-            contentText = viewModel.cellInputText,
-            setContentText = viewModel::setInputText,
-            focusRequester = viewModel.focusRequesterForInputFormula
-        )
-        Grid(
-            gridCell = viewModel.grid,
-            calculatedGrid = viewModel.calculatedGrid,
-            selectedCell = viewModel.selectedCell,
-            setSelectedCell = viewModel::setCellSelectedAt
-        )
-    }
+fun App(viewModel: ViewModel) = Column {
+    InputFormula(
+        contentText = viewModel.cellInputText,
+        setContentText = viewModel::setInputText,
+        focusRequester = viewModel.focusRequesterForInputFormula
+    )
+    Grid(
+        gridCell = viewModel.grid,
+        calculatedGrid = viewModel.calculatedGrid,
+        selectedCell = viewModel.selectedCell,
+        setSelectedCell = viewModel::setCellSelectedAt
+    )
 }
+

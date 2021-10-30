@@ -7,6 +7,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusRequester
 import fr.tb_lab.model.*
 import fr.tb_lab.model.parser.evaluateCell
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.nio.file.Path
+import kotlin.io.path.writeText
 
 class ViewModel {
     private var selectedCellCord by mutableStateOf(0 to 0)
@@ -45,6 +49,16 @@ class ViewModel {
     fun setCellSelectedAt(x: Int, y: Int) {
         selectedCellCord = x to y
         focusRequesterForInputFormula.requestFocus()
+    }
+
+    fun exportGrid(path: Path) {
+        val jsonGrid = try {
+            Json.encodeToString(grid)
+        } catch (e: Throwable) {
+            return
+        }
+
+        path.writeText(jsonGrid)
     }
 
     private companion object {

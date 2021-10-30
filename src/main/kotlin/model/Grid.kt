@@ -1,7 +1,14 @@
 package fr.tb_lab.model
 
-class Grid(gridSize: Int) : List<List<Cell>> by List(gridSize, { List(gridSize) { Cell() } }) {
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
+
+@Serializable
+class Grid(private val list: List<List<Cell>>) : List<List<Cell>> by list {
+    @Transient
     val alphaHeader = AlphabeticalHeaderList(size)
+
+    constructor(gridSize: Int) : this(List(gridSize) { List(gridSize) { Cell() } })
 
     fun getCellFromStringCoordinates(coordinates: String): Result<Cell> {
         return if (coordinates.matches(matchCellCoordinate)) {
