@@ -44,6 +44,9 @@ tailrec fun evaluateCell(
                 return evaluateSimpleExpression(tokenizedExpression, grid, ignoredCells)
             }
 
+            if (simpleExpression.isEmpty())
+                return Result.failure(InvalidSymbolError())
+
             val evaluatedSimpleExpression =
                 evaluateSimpleExpression(simpleExpression, grid, ignoredCells).getOrElse { return Result.failure(it) }
 
@@ -81,7 +84,6 @@ private tailrec fun evaluateSimpleExpression(
             val (baseToken, expToken) = expression.getSurroundingTokenValue(id)
                 .getOrElse { return Result.failure(InvalidSymbolError()) }
 
-            // TODO Check values
             val base = evaluateValueToken(baseToken, grid, ignoredCells) { return Result.failure(it) }
             val exp = evaluateValueToken(expToken, grid, ignoredCells) { return Result.failure(it) }
 
