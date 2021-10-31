@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -21,7 +22,8 @@ fun InputFormula(
         value = contentText,
         onValueChange = setContentText,
         modifier = Modifier.padding(10.dp).fillMaxWidth().focusRequester(focusRequester),
-        singleLine = true
+        singleLine = true,
+        placeholder = { Text("Enter a formula") }
     )
 
     LaunchedEffect(Unit) {
