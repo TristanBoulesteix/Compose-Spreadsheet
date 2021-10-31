@@ -2,6 +2,7 @@ package fr.tb_lab
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,11 +33,13 @@ fun main() = singleWindowApplication(
 
 @Composable
 fun App(viewModel: ViewModel) = Column {
-    InputFormula(
-        contentText = viewModel.cellInputText,
-        setContentText = viewModel::setInputText,
-        focusRequester = viewModel.focusRequesterForInputFormula
-    )
+    Surface {
+        InputFormula(
+            contentText = viewModel.cellInputText,
+            setContentText = viewModel::setInputText,
+            focusRequester = viewModel.focusRequesterForInputFormula
+        )
+    }
     Grid(
         gridCell = viewModel.grid,
         calculatedGrid = viewModel.calculatedGrid,

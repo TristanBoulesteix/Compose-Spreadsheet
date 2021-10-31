@@ -2,15 +2,23 @@ package fr.tb_lab.model.parser
 
 import fr.tb_lab.model.parser.tokenType.*
 
+/**
+ * Parse a string expression to convert it to a [TokenizedExpression].
+ *
+ * @param expression The expression to scan
+ */
 @OptIn(ExperimentalStdlibApi::class)
 fun scan(expression: String): TokenizedExpression {
     val stringBuilder = StringBuilder()
 
+    // If the expression is empty, there is no token
     if (expression.isBlank()) return emptyList()
 
     return buildList {
+        // We iterate through each character to convert them into Token
         expression.trim().forEachIndexed character@{ index, char ->
             if (char.isLetter() && (stringBuilder.isEmpty() || stringBuilder.matches("^[A-Z]+\$".toRegex()))) {
+                // if
                 stringBuilder.append(char)
                 return@character
             }

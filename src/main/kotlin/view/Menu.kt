@@ -45,6 +45,9 @@ fun FrameWindowScope.Menu(exportGrid: (Path) -> Unit, importGrid: (Path) -> Unit
     }
 }
 
+/**
+ * Show a JOption pane to ask the user if he wants to override an existing file by a new one
+ */
 private fun confirmOverrideFile() = JOptionPane.showConfirmDialog(
     null,
     "A file with the same name already exists. Do you want to override it?",
