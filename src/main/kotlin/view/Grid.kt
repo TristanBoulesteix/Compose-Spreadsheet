@@ -40,7 +40,8 @@ fun Grid(
             Text(
                 text = calculatedContent,
                 modifier = cellModifier(cellSize).cellSelector(setSelectedCell, rowIndex, columnIndex),
-                color = cellTextColor
+                color = cellTextColor,
+                maxLines = 1
             )
         } else {
             Text(
