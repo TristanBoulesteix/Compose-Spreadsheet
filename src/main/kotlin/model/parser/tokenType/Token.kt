@@ -15,9 +15,7 @@ sealed class Token<T>(val symbol: T) {
         fun getTokenFromSymbol(token: Char) = objectTokens.find { it.symbol == token } ?: valueOf(token)
     }
 
-    override fun toString(): String {
-        return "(Expr:$symbol, Token:${this::class.simpleName})"
-    }
+    override fun toString() = "(Expr:$symbol, Token:${this::class.simpleName})"
 }
 
 object ParLeft : Token<Char>('(')

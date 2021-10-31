@@ -12,10 +12,20 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
+/**
+ * Representation of a cell
+ */
 @Serializable(with = CellSerializer::class)
 class Cell {
+    /**
+     * The content of cell represented as a string
+     */
     var content by mutableStateOf("")
 
+    /**
+     * The content translated as a [fr.tb_lab.model.parser.tokenType.TokenizedExpression].
+     * This is automatically lazy scanned on access if the [content] has changed.
+     */
     val tokenizedContent by derivedStateOf { scan(content) }
 }
 
