@@ -2,9 +2,9 @@ package fr.tb_lab.model.parser
 
 import fr.tb_lab.model.Cell
 import fr.tb_lab.model.Grid
-import org.junit.jupiter.api.Test
 import kotlin.math.pow
 import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class ScannerKtTest {
@@ -19,7 +19,7 @@ internal class ScannerKtTest {
     }
 
     @Test
-    fun `parse expression with minus sign at the beginning and strange indent`() {
+    fun `scan expression with minus sign at the beginning and strange indent`() {
         val expression = " -(  2 + 8) - 2^(12*3)"
         val expectedResult = -(2 + 8) - 2.0.pow(12 * 3)
 
