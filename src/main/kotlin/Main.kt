@@ -16,7 +16,7 @@ import fr.tb_lab.view.Menu
 import fr.tb_lab.viewmodel.ViewModel
 
 fun main() = singleWindowApplication(
-    title = "ComposeSheet",
+    title = "Compose Spreadsheet",
     state = WindowState(position = WindowPosition.Aligned(Alignment.Center)),
 ) {
     val viewModel = remember(::ViewModel)
