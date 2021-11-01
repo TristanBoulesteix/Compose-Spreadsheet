@@ -17,6 +17,8 @@ If you use IntelliJ IDEA, those run configurations are available directly on the
 If you have any issue to run the program, you should run it from IntelliJ with the run configuration provided. If you have other issue,
 you can check the [Compose for Desktop documentation](https://github.com/JetBrains/compose-jb/tree/master/tutorials/Native_distributions_and_local_execution) to build an executable. 
 
+You can also find the compiled binaries in the directory Compose Spreadsheet binaries. To run the program click on Compose _Spreadsheet.exe_
+
 # Functionalities
 Compose Spreadsheet UI is separated in two components. Above the input pane allow the user to write a formula for the current selected cell
 and the grid below contains all the cell. To select a cell, you just have to click on it.
