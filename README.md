@@ -2,6 +2,9 @@
 Compose Spreadsheet is a small GUI tool for operating with spreadsheets made with Compose for Desktop.
 
 # How to run it ?
+This software can be built for Windows, Linux and macOS but was only tested with Windows 10. I suggest you use this os
+to avoid unexpected behavior. Compose for Desktop is a beta library and can behave strangely with some screen resolutions / dual screens.
+
 To build and run this program, you need to have [gradle](https://gradle.org/install/) installed on your computer alongside 
 with the [JDK](https://adoptopenjdk.net) version 8 or higher.
 Then, you need to execute the gradle command "./gradlew runDistributable" on the root directory of the project to build 
