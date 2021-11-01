@@ -40,7 +40,7 @@ compose.desktop {
         mainClass = "fr.tb_lab.MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "ComposeSheet"
+            packageName = "Compose Spreadsheet"
             packageVersion = "1.0.0"
         }
     }

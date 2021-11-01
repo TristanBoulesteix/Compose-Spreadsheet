@@ -6,5 +6,5 @@ pluginManagement {
     }
     
 }
-rootProject.name = "ComposeSheet"
+rootProject.name = "ComposeSpreadsheet"
 
