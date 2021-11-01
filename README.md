@@ -2,12 +2,15 @@
 Compose Spreadsheet is a small GUI tool for operating with spreadsheets made with Compose for Desktop.
 
 # How to run it ?
-To build and run this program, you need to have [gradle](https://gradle.org/install/) installed on your computer.
+To build and run this program, you need to have [gradle](https://gradle.org/install/) installed on your computer alongside 
+with the [JDK](https://adoptopenjdk.net) version 8 or higher.
 Then, you need to execute the gradle command "./gradlew runDistributable" on the root directory of the project to build 
 the project and execute it at the same time.
 
 Alternatively, you can run the gradle command "./gradlew createDistributable". This will build the project and create a
 runnable executable file named ComposeSheet.exe in the directory located in _build\compose\binaries\main\app\ComposeSheet\Compose Spreadsheet_
+
+If you use IntelliJ IDEA, those run configurations are available directly on the run configuration dropdown at the top left of the IDEA.
 
 # Functionalities
 Compose Spreadsheet UI is separated in two components. Above the input pane allow the user to write a formula for the current selected cell
