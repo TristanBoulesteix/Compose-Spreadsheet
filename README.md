@@ -6,14 +6,16 @@ This software can be built for Windows, Linux and macOS but was only tested with
 to avoid unexpected behavior. Compose for Desktop is a beta library and can behave strangely with some screen resolutions / dual screens.
 
 To build and run this program, you need to have [gradle](https://gradle.org/install/) installed on your computer alongside 
-with the [JDK](https://adoptopenjdk.net) version 8 or higher.
-Then, you need to execute the gradle command "./gradlew runDistributable" on the root directory of the project to build 
+with the [JDK](https://adoptopenjdk.net) version 15 or higher.
+Then, you need to execute the gradle command "./gradlew runDistributable" with the right JDK available in the environment variable JDK_HOME on the root directory of the project to build 
 the project and execute it at the same time.
 
 Alternatively, you can run the gradle command "./gradlew createDistributable". This will build the project and create a
 runnable executable file named ComposeSheet.exe in the directory located in _build\compose\binaries\main\app\ComposeSheet\Compose Spreadsheet_
 
 If you use IntelliJ IDEA, those run configurations are available directly on the run configuration dropdown at the top left of the IDEA.
+If you have any issue to run the program, you should run it from IntelliJ with the run configuration provided. If you have other issue,
+you can check the [Compose for Desktop documentation](https://github.com/JetBrains/compose-jb/tree/master/tutorials/Native_distributions_and_local_execution) to build an executable. 
 
 # Functionalities
 Compose Spreadsheet UI is separated in two components. Above the input pane allow the user to write a formula for the current selected cell
