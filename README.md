@@ -9,7 +9,7 @@ the project and execute it at the same time.
 Alternatively, you can run the gradle command "./gradlew createDistributable". This will build the project and create a
 runnable executable file named ComposeSheet.exe in the directory located in _build\compose\binaries\main\app\ComposeSheet\Compose Spreadsheet_
 
-#Functionalities
+# Functionalities
 Compose Spreadsheet UI is separated in two components. Above the input pane allow the user to write a formula for the current selected cell
 and the grid below contains all the cell. To select a cell, you just have to click on it.
 
