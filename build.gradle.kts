@@ -48,6 +48,6 @@ compose.desktop {
 
 kotlin {
     jvmToolchain {
-        (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(16))
+        this.languageVersion.set(JavaLanguageVersion.of(16))
     }
 }

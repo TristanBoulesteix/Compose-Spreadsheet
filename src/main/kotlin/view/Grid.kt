@@ -48,7 +48,7 @@ fun Grid(
                 text = cell.content,
                 modifier = cellModifier(
                     cellSize = cellSize,
-                    isActive = cell == selectedCell
+                    isActive = true
                 ).cellSelector(setSelectedCell, rowIndex, columnIndex)
             )
         }
